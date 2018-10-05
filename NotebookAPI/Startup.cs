@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NotebookAPI.Models;
+using NotebookAPI.Repositories;
 
 namespace NotebookAPI
 {
@@ -33,6 +34,11 @@ namespace NotebookAPI
                 options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
                 options.Database = Configuration.GetSection("MongoConnection:Database").Value;
             });
+
+            //Transient: Created each time.
+            //Scoped: Created only once per request.
+            //Singleton: Created the first time they are requested.Each subsequent request uses the instance that was created the first time.
+            services.AddTransient<INoteRepository, NoteRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
