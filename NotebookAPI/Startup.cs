@@ -27,6 +27,16 @@ namespace NotebookAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add service and create Policy with options 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.Configure<Settings>(options =>
@@ -43,7 +53,10 @@ namespace NotebookAPI
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
+        { 
+            // global policy, if assigned here (it could be defined individually for each controller) 
+            app.UseCors("CorsPolicy");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
